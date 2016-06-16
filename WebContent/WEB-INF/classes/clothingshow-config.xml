@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<config key="exception-config-location" value="exception.properties"/>
+	<config key="sql-config-location" value="sql.properties" listener="1"/>
+	<config key="cache-table-config" value=""/>
+	<config key="cache-table-config" value=""/>
+</configuration>

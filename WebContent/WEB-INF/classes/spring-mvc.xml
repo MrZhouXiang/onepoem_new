@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="
+http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context-3.0.xsd
+http://www.springframework.org/schema/mvc
+http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
+ 
+	<context:component-scan base-package="com.puyun.myshop" use-default-filters="true">
+		<context:include-filter type="regex" expression=".ctrl.*Ctrl"/>
+	</context:component-scan>
+
+	<bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
+		<property name="converters">
+			<list></list>
+		</property>
+	</bean>
+	<bean id="webBindingInitializer" class="org.springframework.web.bind.support.ConfigurableWebBindingInitializer">  
+    	<property name="conversionService" ref="conversionService"/>
+	</bean>
+
+	<bean id="methodNameResolver" class="org.springframework.web.servlet.mvc.multiaction.ParameterMethodNameResolver"></bean>
+
+	<bean id="jacksonMessageConverter"
+		class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">
+		<property name="objectMapper">
+			<bean class="com.puyun.myshop.base.ObjectMappingCustomer">
+				<property name="dateFormat">
+					<bean class="java.text.SimpleDateFormat">
+						<constructor-arg type="java.lang.String" value="yyyy-MM-dd HH:mm:ss" />
+					</bean>
+				</property>
+			</bean>
+		</property>
+	</bean>
+	
+	<bean class="org.springframework.http.converter.FormHttpMessageConverter" />
+	<bean class="org.springframework.http.converter.BufferedImageHttpMessageConverter" />
+	<bean class="org.springframework.http.converter.ByteArrayHttpMessageConverter" />
+	<bean class="org.springframework.http.converter.StringHttpMessageConverter" />
+	<bean class="org.springframework.http.converter.ResourceHttpMessageConverter" />
+	
+	<bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping" />
+	<bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+		<property name="webBindingInitializer" ref="webBindingInitializer"/>
+		<property name="messageConverters">
+			<list>
+				<ref bean="jacksonMessageConverter" />
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
+		<property name="prefix" value="/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+
+    <!--静态资源的访问配置,文件夹配置，二选一 -->
+    <mvc:resources mapping="/fonts/**" location="/fonts/"/>
+
+    <!-- 支持文件上传 -->
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver" />
+    <!-- 拦截器 -->
+	<mvc:interceptors>
+		<!-- 登录验证 -->
+		<mvc:interceptor>
+			<mvc:mapping path="/*" />
+			<bean class="com.puyun.myshop.base.LoginInterceptor">
+			    <!-- excludeURIs里的地址是不拦截的 -->
+				<property name="excludeURIs">
+					<list>
+						<value>/getApkInfo</value>
+                        <value>/doLogin</value>
+                        <value>/download</value>
+                        <value>/downloads/app</value>
+					</list>
+				</property>
+				 <!-- pageRequestURIs里的地址是需要拦截的 -->
+				<property name="pageRequestURIs">
+					<list>
+                        <value>/logout</value>
+						<value>/pushSystemMsg</value>
+                        <value>/getSystemParameter</value>
+                        <value>/updateSystemParameter</value>
+                        <value>/getMadeTypeLvDetail</value>
+                        <value>/updateMadeTypeLv</value>
+                        <value>/updatePwd</value>
+                        <value>/getManagerList</value>
+                        <value>/modifyManager</value>
+                        <value>/addManager</value>
+                        <value>/resetPwd</value>
+                        <value>/uploadAndroidApk</value>
+                        <value>/deleteManager</value>
+					</list>
+				</property>
+			</bean>
+		</mvc:interceptor>
+		
+	</mvc:interceptors>
+    
+	<!--项目的上下文类 -->	
+	<bean id="zeroContext" class="com.puyun.myshop.base.Context" scope="singleton" init-method="init">
+		<property name="daoSupport" ref="daoSupport"/>
+	</bean>
+	<bean  class="com.puyun.myshop.base.MemoryInitLoad" scope="singleton" init-method="loadMap"></bean>
+	<!-- 定时更新订单状态 -->
+	<bean name="taskJob" class="com.puyun.myshop.base.job.TaskJob" />
+	<!-- 清空热门消息队列  -->
+	<bean name="clearWorkQueueTask" class="com.puyun.myshop.base.job.ClearWorkQueueTask"/>
+	<!-- 通过MethodInvokingJobDetailFactoryBean转换得到一个jobDetail类型的对象 -->
+    <bean id="methodInvokingJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+       <property name="targetObject">
+           <ref bean="taskJob" />
+       </property>
+       <property name="targetMethod">
+           <value>updateStatus</value>
+       </property>
+    </bean>
+	<!-- 通过MethodInvokingJobDetailFactoryBean转换得到一个jobDetail类型的对象 -->
+    <bean id="clearWorkQueueTaskDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+       <property name="targetObject">
+           <ref bean="clearWorkQueueTask" />
+       </property>
+       <property name="targetMethod">
+           <value>clearWorkQueueTask</value>
+       </property>
+    </bean>
+    
+   <!--  配置更新订单状态触发器 -->
+    <bean id="taskJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <!-- 这里不可以直接在属性jobDetail中引用taskJob，因为他要求的是一个jobDetail类型的对象，所以我们得通过MethodInvokingJobDetailFactoryBean来转一下 -->
+       <property name="jobDetail">
+           <ref bean="methodInvokingJobDetail" />
+       </property>
+       
+      			 <!-- 每隔5秒执行一次：*/5 * * * * ?
+                 每隔1分钟执行一次：0 */1 * * * ?
+                 每天23点执行一次：0 0 23 * * ?
+                 每天凌晨1点执行一次：0 0 1 * * ?
+                 每月1号凌晨1点执行一次：0 0 1 1 * ?
+                 每月最后一天23点执行一次：0 0 23 L * ? -->
+		
+       <property name="cronExpression">
+           <value>*/30 * * * * ?</value>
+       </property>
+       
+    </bean>
+    <!--  配置清空热门消息队列触发器 -->
+    <bean id="clearWorkQueueTaskTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <!-- 这里不可以直接在属性jobDetail中引用taskJob，因为他要求的是一个jobDetail类型的对象，所以我们得通过MethodInvokingJobDetailFactoryBean来转一下 -->
+       <property name="jobDetail">
+           <ref bean="clearWorkQueueTaskDetail" />
+       </property>
+       
+      			 <!-- 每隔5秒执行一次：*/5 * * * * ?
+                 每隔1分钟执行一次：0 */1 * * * ?
+                 每天23点执行一次：0 0 23 * * ?
+                 每天凌晨1点执行一次：0 0 1 * * ?
+                 每月1号凌晨1点执行一次：0 0 1 1 * ?
+                 每月最后一天23点执行一次：0 0 23 L * ? -->
+		
+       <property name="cronExpression">
+           <value>0 0 0 * * ?</value>
+       </property>
+       
+    </bean>
+
+    <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+       <!-- 添加更新订单状态触发器 -->
+       <property name="triggers">
+           <list>
+              <ref local="taskJobTrigger" />
+           </list>
+       </property>
+    </bean>
+    
+    <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+       <!-- 添加清空热门消息队列触发器 -->
+       <property name="triggers">
+           <list>
+              <ref local="clearWorkQueueTaskTrigger"/>
+           </list>
+       </property>
+    </bean>
+</beans>

@@ -1,0 +1,116 @@
+@charset "utf-8";
+
+
+/*Small reset 一流素材网www.16sucai.com*/
+		
+.wrap_all{ /*only needed if using big background images like in theme 5*/
+	width:100%;
+	position:relative;
+	display:table;
+	}
+	
+
+#top{
+	position:relative;
+	margin-top: 0;
+	margin-right: auto;
+	margin-bottom: 0;
+	margin-left: auto;
+	}
+
+	
+/*navigation*/
+
+.navwrap{
+    height:50px;
+
+	line-height:50px;
+	padding-right:18px;
+	position:absolute;
+
+	font-size:12px;
+	z-index:6;
+	}
+
+#top #nav{
+	float:left;
+	height:50px;
+	line-height:50px;
+	padding-left:13px;
+}
+
+
+#nav, #nav ul{
+	margin:0;
+	padding:0;
+	list-style-type:none;
+	list-style-position:outside;
+	position:relative;
+	line-height:50px; 
+	z-index:5;
+
+}
+
+
+#top #nav a{
+	height:33px;
+	display:block;
+	padding:0 21px;
+	text-decoration:none;
+	text-align:center;
+	line-height:28px; 
+	outline:none;
+	z-index:35;
+	position:relative;
+	float:left;
+	}
+
+#top #nav ul a{
+	line-height:33px; 
+}
+
+#top #nav li{
+	float:left;
+	position:relative;
+	z-index:20;
+	margin-top:11px;
+}
+
+#top #nav li li{
+	border-left:none;
+	margin-top:0;
+}
+
+#top #nav ul {
+	position:absolute;
+	display:none;
+	width:172px;
+	top:33px;
+	left:-1px;
+
+}
+
+#top #nav li ul a{
+	width:130px;
+	height:auto;
+	float:left;
+	text-align:left;
+	padding:0 21px;
+}
+
+#top #nav ul ul{
+	top:auto;
+	border-top:none;
+}	
+
+#top #nav li ul ul {
+	left:172px;
+	top:0px;
+}
+
+#top #nav li:hover ul ul, #top #nav li:hover ul ul ul,#top  #nav li:hover ul ul ul ul{
+  	display:none;	
+}
+#top #nav li:hover ul, #top #nav li li:hover ul, #top #nav li li li:hover ul, #top #nav li li li li:hover ul{
+	display:block;
+}

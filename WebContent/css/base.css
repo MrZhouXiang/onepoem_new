@@ -1,0 +1,208 @@
+[hidden]{
+    display:none
+}
+html{
+    font-size:100%;
+    -ms-text-size-adjust:100%;
+    -webkit-text-size-adjust:100%
+}
+ul, li {
+    list-style: none;
+    margin: 0;
+}
+body, h1, h2, h3, ul, li ,p{
+    padding: 0;
+    margin: 0;
+}
+a{
+    color:#000;
+    text-decoration:none
+}
+
+a:hover,a:focus{
+    color:#000;
+    text-decoration:none
+}
+a:focus{
+    outline:thin dotted #333;
+    outline:5px auto -webkit-focus-ring-color;
+    outline-offset:-2px
+}
+a:hover,a:active{
+    outline:0
+}
+
+input, label, select, option, textarea, button, fieldset, legend {
+    /*font-family: "Microsoft Yahei";*/
+    font-size:14px;
+}
+b,strong{
+    font-weight:bold
+}
+img {
+    height: auto;
+    vertical-align: middle;
+    border: 0px none;
+}
+small{
+    font-size:80%
+}
+table{
+    border-collapse:collapse;
+    border-spacing:0
+}
+
+body{
+    margin:0;
+    font:14px/1.5 arial,"宋体","Microsoft Yahei","Hiragino Sans GB",sans-serif;
+    /*color:#8c8c8c;*/
+    background-color:#fff
+}
+.hide{
+    display:none
+}
+
+.btn-dft{
+    display:inline-block;
+    *display:inline;
+    *zoom:1;
+    margin-bottom:0;
+    font-size:14px;
+    height:38px;
+    line-height:38px;
+    text-align:center;
+    cursor:pointer;
+    background-color:#fff;
+    border:1px solid #ff4a00;
+    color:#ff4a00;
+    padding:0 10px;
+    /*width:148px*/
+}
+
+.btn-dft:hover,.btn-dft:focus{
+    color:#fff;
+    outline:0;
+    text-decoration:none;
+    background-color:#ff4a00
+}
+
+.btn-dft.active,.btn-dft:active{
+    outline:0;
+    background-color:#ff4a00;
+    -webkit-box-shadow:inset 0 2px 4px rgba(0,0,0,.15);
+    -moz-box-shadow:inset 0 2px 4px rgba(0,0,0,.15);
+    box-shadow:inset 0 2px 4px rgba(0,0,0,.15)
+}
+
+.btn-dft.disabled,.btn-dft[disabled]{
+    cursor:default;
+    opacity:.65;
+    filter:alpha(opacity=65);
+    -webkit-box-shadow:none;
+    -moz-box-shadow:none;
+    box-shadow:none;
+    color:#e5e9ec;
+    background:#ccd0d9
+}
+.btn-main{
+    background-color:#fff;
+    border-color:#a4a4a4;
+    color:#555;
+}
+.btn-small{
+    height:31px;
+    line-height:31px;
+    /*width:118px;*/
+    font-size:12px
+}
+.btn-main:hover,.btn-main:focus,.btn-main.active,.btn-main:active{
+    color:#222;
+    border-color:#a4a4a4;
+    background-color:#ededed;
+}
+
+.btn-block{
+    display:block;
+    width:100%;
+    padding-left:0;
+    padding-right:0;
+    -webkit-box-sizing:content-box;
+    -moz-box-sizing:content-box;
+    box-sizing:content-box
+}
+
+.btn-yellow{
+    background-color:#ffdb3d;
+    border-color:#ffdb3d;
+    color:#333
+}
+
+.btn-yellow:hover,.btn-yellow:focus,.btn-yellow.active,.btn-yellow:active{
+    color:#333;
+    border-color:#ffc700;
+    background-color:#ffc700
+}
+
+.btn-dake{
+    background-color:#6d6d6d;
+    border-color:#6d6d6d;
+    color:#fff
+}
+
+.btn-dake:hover,.btn-dake:focus,.btn-dake.active,.btn-dake:active{
+    color:#fff;
+    border-color:#333;
+    background-color:#333
+}
+
+.btn-dakeLight{
+    background-color:#f3f3f3;
+    border-color:#f3f3f3;
+    color:#333
+}
+
+.btn-dakeLight:hover,.btn-dakeLight:focus,.btn-dakeLight.active,.btn-dakeLight:active{
+    color:#333;
+    border-color:#dfdfdf;
+    background-color:#dfdfdf
+}
+
+.btn-lineDakeLight{
+    background-color:#fafafa;
+    border-color:#f3f3f3;
+    color:#333
+}
+
+.btn-lineDakeLight:hover,.btn-lineDakeLight:focus,.btn-lineDakeLight.active,.btn-lineDakeLight:active{
+    color:#333;
+    border-color:#dfdfdf;
+    background-color:#dfdfdf
+}
+
+.btn-lineDake{
+    background-color:#fff;
+    border-color:#333;
+    color:#333
+}
+
+.btn-lineDake:hover,.btn-lineDake:focus,.btn-lineDake.active,.btn-lineDake:active{
+    color:#fff;
+    border-color:#333;
+    background-color:#333
+}
+
+.btn-disabled{
+    cursor:not-allowed;
+    background-color:#fff;
+    border-color:#f3f3f3;
+    color:#f3f3f3
+}
+
+.btn-disabled:hover,.btn-disabled:focus,.btn-disabled.active,.btn-disabled:active{
+    -webkit-box-shadow:none;
+    -moz-box-shadow:none;
+    box-shadow:none;
+    color:#f3f3f3;
+    border-color:#f3f3f3;
+    background-color:#fff
+}
