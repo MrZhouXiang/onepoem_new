@@ -1,6 +1,5 @@
 package com.puyun.myshop.entity;
 
-import java.util.List;
 
 /**
  * 诗词对象

@@ -124,7 +124,7 @@
 						if (data.success) {
 							$("#table_ads").empty();
 							var urlPath = data.url;
-							alert(urlPath)
+// 							alert(urlPath)
 							//显示列表
 							for ( var i = 0; i < data.result.length; i++) {
 								idArray[i] = data.result[i].id;
