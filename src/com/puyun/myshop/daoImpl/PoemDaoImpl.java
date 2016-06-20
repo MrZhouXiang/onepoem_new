@@ -102,4 +102,11 @@ public class PoemDaoImpl extends BaseDaoImpl implements PoemDao
                 new BeanPropertySqlParameterSource(model), generatedKeyHolder);
         return num > 0 ? true : false;
     }
+
+	@Override
+	public boolean deleteModel(int id) {
+		String sql = "delete from poem_t where id = "+id;
+        int i = jdbcTemplate.update(sql);
+        return i > 0 ? true : false;
+	}
 }

@@ -10,8 +10,11 @@ import com.puyun.myshop.entity.AuthorMod;
 public interface AuthorDao
 {
 
-    List<AuthorMod> getAuthorList(int id, int size);
+    List<AuthorMod> getAuthorList(int id, int size, int page);
+    List<AuthorMod> getAuthorList(String keyword, int start, int num);
 
     boolean addModel(AuthorMod model);
-
+    boolean updateAuthor(AuthorMod model);
+    
+    AuthorMod getAuthor(int id);
 }

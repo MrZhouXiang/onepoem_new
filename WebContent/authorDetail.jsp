@@ -72,8 +72,44 @@
 <!--[if (gt IE 9)|!(IE)]><!-->
 
 <script type="text/javascript">
+	var idVar;
+	var dynasty_id;
+
+	
 	var gradeArray = new Array();
+	function getQueryString(name) {
+		var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+		var r = window.location.search.substr(1).match(reg);
+		if (r != null)
+			return unescape(r[2]);
+		return null;
+	}
+	
 	function loadPage() {
+		idVar = Number(getQueryString("id"));
+		dynasty_id= Number(getQueryString("dynasty_id"));
+		
+		//获取详情
+		$.ajax({
+			url : "webctrl/getAuthor",
+			dataType : "json",
+			type : "post",
+			data:{
+				id : idVar,
+	        },
+			success : function(data) {
+				$("#title").val(data.name);
+				$("#content").val(data.introduce);
+				$("#style").val(data.style);
+				var path = "../../res/assets/img/author/"+data.url;
+	            $("#front_files").find("img").attr("src",path).show();
+	            $("#front_files").find("a").attr("href",path).show();
+	            $("#front_files").find("i").hide();
+	            $("#front_fileName").val(data.url); //隐藏域
+			}
+		});
+		
+		
 		$.ajax({
 			url : "webctrl/getDynastyList",
 			dataType : "json",
@@ -86,8 +122,12 @@
 				$("#made_type").empty();
 					for (var i = 0; i < data.length; i++) {
 						gradeArray[i] = data[i].id;
+						var selected= "";
+						if(data[i].id==dynasty_id){
+							selected= "selected";
+						}
 						$("#made_type").append(
-								"<option value='"+data[i].id+"'>"
+								"<option "+selected+" value='"+data[i].id+"'>"
 										+ data[i].name + "</option>");
 										}
 			}
@@ -114,12 +154,12 @@
 				var title = $("#title").val();
 				var content = $("#content").val();
 				var style = $("#style").val();
-	        	if(title === ""){
+				if(title === ""){
 	        		layer.msg("请输入诗人姓名",2,{type : 1,shade : false});
 	        		$("#title").focus();
 	        		return false;
 	        	}
-	        	if(style === ""){
+				if(style === ""){
 	        		layer.msg("请输入字号",2,{type : 1,shade : false});
 	        		$("#style").focus();
 	        		return false;
@@ -137,7 +177,7 @@
 	        	
 				var photoNameStr = $("#front_fileName").val();
 	            $.ajax({
-	                url:"webctrl/newAuthor",
+	                url:"webctrl/updateAuthor",
 	                type:"POST",
 	                dataType:"json",
 	                data:{
@@ -147,10 +187,11 @@
 	                	style : style,
 	                	introduce : content,
 	                	url : photoNameStr,
+	                	id : idVar
 	                },
 	                success:function(data){
 	                    if (data.success) {
-	                    	layer.msg("新增成功",2,{type:1,shade:false});
+	                    	layer.msg("保存成功",2,{type:1,shade:false});
 	                    }
 	            	}
 	            });

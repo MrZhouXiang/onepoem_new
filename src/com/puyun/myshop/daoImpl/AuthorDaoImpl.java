@@ -11,6 +11,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 
 import com.puyun.myshop.dao.AuthorDao;
 import com.puyun.myshop.entity.AuthorMod;
+import com.puyun.myshop.entity.PoemMod;
 
 /**
  * 作者处理
@@ -36,7 +37,7 @@ public class AuthorDaoImpl extends BaseDaoImpl implements AuthorDao
     }
 
     @Override
-    public List<AuthorMod> getAuthorList(int id, int size)
+    public List<AuthorMod> getAuthorList(int id, int size, int page)
     {
         // TODO Auto-generated method stub
         String sql = "select * from author_t";
@@ -48,12 +49,43 @@ public class AuthorDaoImpl extends BaseDaoImpl implements AuthorDao
     @Override
     public boolean addModel(AuthorMod model)
     {
-        String sql1 = "insert into author_t(name,dynasty_id,dynasty,introduce,url)"
-                + "values(:name,:dynasty_id,:dynasty,:introduce,:url)";
+        String sql1 = "insert into author_t(name,style,dynasty_id,dynasty,introduce,url)"
+                + "values(:name,:style,:dynasty_id,:dynasty,:introduce,:url)";
         GeneratedKeyHolder generatedKeyHolder = new GeneratedKeyHolder();
         int i = this.namedJdbcTemplate.update(sql1,
                 new BeanPropertySqlParameterSource(model), generatedKeyHolder);
         return i > 0 ? true : false;
     }
+
+	@Override
+	public List<AuthorMod> getAuthorList(String keyword, int start, int num) {
+		// TODO Auto-generated method stub
+      String key = "%" + keyword + "%";
+      String sql = "select * from author_t where name like ? order by id desc"
+              + " limit " + start + "," + num;
+      List<AuthorMod> list = jdbcTemplate.query(sql, new Object[]
+      { key }, new BeanPropertyRowMapper<AuthorMod>(AuthorMod.class));
+      return list;
+	}
+
+	@Override
+	public AuthorMod getAuthor(int id) {
+		String sql = "select * from author_t where id = ?";
+        List<AuthorMod> list = jdbcTemplate.query(sql, new Object[]
+        { id }, new BeanPropertyRowMapper<AuthorMod>(AuthorMod.class));
+        return list.get(0);
+	}
+
+	@Override
+	public boolean updateAuthor(AuthorMod model) {
+		// TODO Auto-generated method stub
+		String sql = "update author_t set name=:name,style=:style,dynasty_id=:dynasty_id,dynasty=:dynasty,introduce=:introduce,url=:url "
+                + "where id=:id";
+        GeneratedKeyHolder generatedKeyHolder = new GeneratedKeyHolder();
+        int num = this.namedJdbcTemplate.update(sql,
+                new BeanPropertySqlParameterSource(model), generatedKeyHolder);
+        return num > 0 ? true : false;
+//        return false;
+	}
 
 }

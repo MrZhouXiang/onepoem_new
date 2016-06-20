@@ -74,7 +74,6 @@
 <script type="text/javascript">
 	var gradeArray = new Array();
 	function loadPage() {
-	alert(1);
 		$.ajax({
 			url : "webctrl/getAuthorList",
 			dataType : "json",

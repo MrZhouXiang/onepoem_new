@@ -140,6 +140,7 @@
             };
             infoUpload(front_obj); 
             addModel();
+            delModel();
 	});
 	
 	/**
@@ -188,7 +189,33 @@
 	        });
         
 	}
-	
+	/**
+	 * 新增模板
+	 */
+	function delModel(){
+			$("#delete").on("click",function(){
+				if (confirm("你是否确定删除该记录?")) {
+					$.ajax({
+						url : "webctrl/deleteOnePoem",
+						data : {
+							id : idVar,
+							staus : 6004
+						},
+						dataType : "json",
+						type : "post",
+						success : function(data) {
+							if (data.code = 2000) {
+								alert("删除成功.");
+		                    	javascript:history.go(-1);
+							} else {
+								alert("删除失败,请重新尝试.");
+							}
+						}
+					});
+				}
+	        });
+        
+	}
 	/**
 	 * 封面上传
 	 *   var obj = {
@@ -319,7 +346,8 @@
 					</div>
 				</div>
 				<div class="btn-toolbar">
-					<button class="btn btn-primary" id="save" style="float: right;">保存</button>
+					<button class="btn btn-primary" id="save" >保存</button>
+					<button class="btn btn-primary" id="delete" >删除</button>
 				</div>
 			</div>
 		</div>

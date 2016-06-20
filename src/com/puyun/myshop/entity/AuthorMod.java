@@ -10,6 +10,7 @@ public class AuthorMod
 {
     private String id; // 主键
     private String name; // 诗人名字
+    private String style; // 诗人字号
     private String dynasty_id; // 诗人朝代id
     private String dynasty; // 诗人朝代
     private String introduce; // 诗人描述
@@ -74,5 +75,15 @@ public class AuthorMod
     {
         this.introduce = introduce;
     }
+
+	public String getStyle() {
+		return style;
+	}
+
+	public void setStyle(String style) {
+		this.style = style;
+	}
+    
+    
 
 }

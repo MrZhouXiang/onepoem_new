@@ -10,7 +10,7 @@
 	<ul id="legal-menu" class="nav nav-list collapse in">
 	</ul>
 	<div class="nav-header"
-		onClick="window.location.href='addAuthor.jsp'"
+		onClick="window.location.href='authorManage.jsp'"
 		data-target="#legal-menu">
 		<i class="icon-align-justify"></i>诗人管理
 	</div>

@@ -19,5 +19,7 @@ public interface PoemDao
     boolean addModel(PoemMod model);
 
     boolean updateModel(PoemMod model);
+    
+    boolean deleteModel(int id);
 
 }
