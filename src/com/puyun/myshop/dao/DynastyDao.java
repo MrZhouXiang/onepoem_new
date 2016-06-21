@@ -11,5 +11,6 @@ public interface DynastyDao
 {
 
     List<DynastyMod> getDynastyList(int id, int size);
+    List<DynastyMod> getDynastyList(String keyword, int start, int num);
 
 }

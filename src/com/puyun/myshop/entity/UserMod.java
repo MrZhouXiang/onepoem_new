@@ -15,10 +15,21 @@ public class UserMod
     private String email;// 邮箱
     private String url;// 头像
     private int money;// 墨汁【充值】
+    private int status = 0;// 状态
+    
+    
     
     
 
-    public int getMoney() {
+    public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
+	}
+
+	public int getMoney() {
 		return money;
 	}
 

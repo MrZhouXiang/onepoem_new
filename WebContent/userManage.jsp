@@ -135,7 +135,7 @@
 														+ data.result[i].pen_name
 														+ "</td>"
 														+ "<td>"
-														+ data.result[i].email
+														+ data.result[i].tel
 														+ "</td>"
 														+ "<td>"
 														+ data.result[i].money
@@ -173,7 +173,7 @@
 		});
 
 		$("#add").on("click", function() {
-			location.href = "addPoem.jsp";
+			location.href = "addUser.jsp";
 		});
 
 	});
@@ -241,7 +241,7 @@
 										<thead>
 											<tr>
 												<th>姓名</th>
-												<th>邮箱</th>
+												<th>电话</th>
 												<th>墨汁</th>
 												<th>图片</th>
 												<th>操作</th>

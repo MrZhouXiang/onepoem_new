@@ -1,11 +1,11 @@
-<!-- 用户详情 -->
+<!-- 新增用户 -->
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>用户详情</title>
+<title>新增用户</title>
 <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="">
@@ -164,7 +164,7 @@
 	        	
 				var photoNameStr = $("#front_fileName").val();
 	            $.ajax({
-	                url:"webctrl/updateUser",
+	                url:"webctrl/addUser",
 	                type:"POST",
 	                dataType:"json",
 	                data:{
@@ -177,10 +177,9 @@
 	                },
 	                success:function(data){
 	                    if (data.success) {
-	                    	layer.msg("保存成功",2,{type:1,shade:false});		    
+	                    	layer.msg("保存成功",2,{type:1,shade:false});
 	                    	javascript:history.go(-1);
-
-	                    }
+						}
 	            	}
 	            });
 	        });
@@ -193,7 +192,7 @@
 			$("#delete").on("click",function(){
 				if (confirm("你是否确定删除该记录?")) {
 					$.ajax({
-						url : "webctrl/deleteOneUser",
+						url : "webctrl/deleteOneAuthor",
 						data : {
 							id : idVar,
 							staus : 6004
@@ -278,7 +277,7 @@
 				<jsp:include page="/left.jsp"></jsp:include>
 			</div>
 			<div class="span10">
-				<h2>用户详情</h2>
+				<h2>新增用户</h2>
 				<div class="well">
 					<div id="myTabContent" class="tab-content">
 						<div class="row-fluid">
@@ -351,7 +350,6 @@
 				</div>
 				<div class="btn-toolbar">
 					<button class="btn btn-primary" id="save">保存</button>
-					<button class="btn btn-primary" id="delete">删除</button>
 				</div>
 			</div>
 		</div>

@@ -53,4 +53,12 @@ public class DynastyDaoImpl extends BaseDaoImpl implements DynastyDao
         return list;
     }
 
+	@Override
+	public List<DynastyMod> getDynastyList(String keyword, int start, int num) {
+		String sql = "select * from dynasty_t";
+        List<DynastyMod> list = jdbcTemplate.query(sql,
+                new BeanPropertyRowMapper<DynastyMod>(DynastyMod.class));
+        return list;
+	}
+
 }

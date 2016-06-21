@@ -52,7 +52,72 @@ public class WebCtrl {
 		super();
 		logger.debug("创建对象AppCtrl");
 	}
+	
+	/**
+	 * 获取用户列表
+	 * 
+	 * @param id
+	 * @param size
+	 * @return
+	 */
+	@RequestMapping(value = "/getDynastyList/{p}")
+	@ResponseBody
+	public Map<String, Object> getDynastyList(HttpServletRequest req,
+			PageBean page, String keyword, @PathVariable int p,
+			@RequestParam(defaultValue = "10") int num) {
+		// List<AuthorMod> list = authorDao.getAuthorList(id, size, -1);
+		// return list;
+		Map<String, Object> map = new HashMap<String, Object>();
+		String urlPath = req.getScheme() + "://" + req.getServerName() + ":"
+				+ req.getServerPort(); // url路径
+		urlPath = Constants.DEFAULT_AVATAR_PATH;
+		logger.debug("urlPath-->" + urlPath);
+		try {
+			// http://127.0.0.1:8080
+			int start = (p - 1) * num;
+			int count = 100;
+			List<DynastyMod> list = dynastyDao.getDynastyList(keyword, start, num);
+			// return list;
+			if (list == null) {
+				map.put("success", false);
+			} else {
+				map.put("success", true);
+				map.put("url", urlPath);
+				map.put("result", list);
 
+				map.put("totalPage", ((count - 1) / num) + 1);
+				map.put("total", count);
+				map.put("curPage", p);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return map;
+	}
+	
+	/**
+	 * 
+	 * 增加一首诗
+	 * 
+	 * @param req
+	 * @param model
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/addUser")
+	public Map<String, Object> addUser(HttpServletRequest req, UserMod model) {
+
+		Map<String, Object> map = new HashMap<String, Object>();
+		boolean flag = userDao.addModel(model);
+		if (flag) {
+			map.put("success", true);
+			logger.debug("操作成功");
+		} else {
+			map.put("success", false);
+			logger.debug("操作失败");
+		}
+		return map;
+	}
 	/**
 	 * 获取用户列表
 	 * 
@@ -118,7 +183,30 @@ public class WebCtrl {
 		}
 		return map;
 	}
+	
+	/**
+	 * 
+	 * 删除一位诗人
+	 * 
+	 * @param req
+	 * @param model
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/deleteOneUser")
+	public Map<String, Object> deleteOneUser(HttpServletRequest req, int id) {
 
+		Map<String, Object> map = new HashMap<String, Object>();
+		boolean flag = userDao.deleteModel(id);
+		if (flag) {
+			map.put("success", true);
+			logger.debug("操作成功");
+		} else {
+			map.put("success", false);
+			logger.debug("操作失败");
+		}
+		return map;
+	}
 	/**
 	 * 
 	 * 获取一用户

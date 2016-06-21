@@ -23,4 +23,8 @@ public interface UserDao
 	UserMod getUser(int id);
 
 	boolean updateUser(UserMod model);
+
+	boolean deleteModel(int id);
+
+	boolean addModel(UserMod model);
 }

@@ -112,7 +112,7 @@
 		currentLoc = 1;
 		$
 				.ajax({
-					url : "webctrl/getPoemList/" + currentPageVar,
+					url : "webctrl/getDynastyList/" + currentPageVar,
 					data : {
 						currentPage : currentPageVar,
 						pageSize : pageSizeVar,
@@ -121,7 +121,6 @@
 					dataType : "json",
 					type : "post",
 					success : function(data) {
-
 						if (data.success) {
 							$("#table_ads").empty();
 							var urlPath = data.url;
@@ -133,27 +132,15 @@
 										.append(
 												"<tr>"
 														+ "<td>"
-														+ data.result[i].title
+														+ data.result[i].name
 														+ "</td>"
 														+ "<td>"
-														+ data.result[i].author_name
+														+ data.result[i].begin_time
 														+ "</td>"
 														+ "<td>"
-														+ data.result[i].content
-																.substr(0, 10)
-														+ "..."
+														+ data.result[i].end_time
 														+ "</td>"
-														+ "<td>"
-														+ "<a href='"+urlPath+data.result[i].url+"' target='_blank'><img width='150' height='150' src='"
-															+urlPath+data.result[i].url+"' align='middle''></a>"
-														+ "</td>"
-														+ "<td>"
-														+ "<a href='#' onclick=\"memberDetail_Click('"
-														+ data.result[i].id
-														+ "','"
-														+ data.result[i].author_id
-														+ "')\">详情</a>"
-														+ "</td>" + "</tr>");
+														+ "</tr>");
 							}
 							//显示分布按钮							
 							totalPage = data.totalPage;
@@ -249,11 +236,9 @@
 									<table class="table table-hover">
 										<thead>
 											<tr>
-												<th>标题</th>
-												<th>作者</th>
-												<th>内容</th>
-												<th>图片</th>
-												<th>操作</th>
+												<th>朝代</th>
+												<th>开始时间</th>
+												<th>结束时间</th>
 											</tr>
 										</thead>
 										<tbody id="table_ads">

@@ -35,6 +35,8 @@ public class UserDaoImpl implements UserDao {
 				jdbcTemplate.getDataSource());
 	}
 
+	private String statusFilter = " and status = 0 "; // 过滤掉非正常状态
+
 	@Override
 	public boolean isExit(String account, int type) {
 		String sql = "";
@@ -115,29 +117,47 @@ public class UserDaoImpl implements UserDao {
 	public List<UserMod> getUserList(String keyword, int start, int num) {
 		// TODO Auto-generated method stub
 		String key = "%" + keyword + "%";
-        String sql = "select * from user_t where pen_name like ? order by id desc"
-                + " limit " + start + "," + num;
-        List<UserMod> list = jdbcTemplate.query(sql, new Object[]
-        { key }, new BeanPropertyRowMapper<UserMod>(UserMod.class));
-        return list;
+		String sql = "select * from user_t where pen_name like ? "
+				+ statusFilter + "order by id desc" + " limit " + start + ","
+				+ num;
+		List<UserMod> list = jdbcTemplate.query(sql, new Object[] { key },
+				new BeanPropertyRowMapper<UserMod>(UserMod.class));
+		return list;
 	}
 
-	
 	@Override
 	public UserMod getUser(int id) {
 		String sql = "select * from user_t where id = ?";
-        List<UserMod> list = jdbcTemplate.query(sql, new Object[]
-        { id }, new BeanPropertyRowMapper<UserMod>(UserMod.class));
-        return list.get(0);
+		List<UserMod> list = jdbcTemplate.query(sql, new Object[] { id },
+				new BeanPropertyRowMapper<UserMod>(UserMod.class));
+		return list.get(0);
 	}
 
 	@Override
 	public boolean updateUser(UserMod model) {
 		String sql = "update user_t set pen_name=:pen_name,tel=:tel,email=:email,url=:url,money=:money "
-                + "where id=:id";
+				+ "where id=:id";
+		GeneratedKeyHolder generatedKeyHolder = new GeneratedKeyHolder();
+		int num = this.namedJdbcTemplate.update(sql,
+				new BeanPropertySqlParameterSource(model), generatedKeyHolder);
+		return num > 0 ? true : false;
+	}
+
+	@Override
+	public boolean deleteModel(int id) {
+		String sql = "update user_t set status=1 "
+                + "where id="+id;
+        int i = jdbcTemplate.update(sql);
+        return i > 0 ? true : false;
+	}
+
+	@Override
+	public boolean addModel(UserMod model) {
+		String sql = "insert into user_t(pen_name,tel,email,url,money)"
+                + "values(:pen_name,:tel,:email,:url,:money)";
         GeneratedKeyHolder generatedKeyHolder = new GeneratedKeyHolder();
-        int num = this.namedJdbcTemplate.update(sql,
+        int i = this.namedJdbcTemplate.update(sql,
                 new BeanPropertySqlParameterSource(model), generatedKeyHolder);
-        return num > 0 ? true : false;
+        return i > 0 ? true : false;
 	}
 }
