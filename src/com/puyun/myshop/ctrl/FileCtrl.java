@@ -70,8 +70,8 @@ public class FileCtrl
             boolean forceResize = false;
             switch (type)
             {
-            case 1:// 资讯图片
-                defPath = Constants.DEFAULT_INFO_PATH;
+            case 1:// 用户
+                defPath = Constants.DEFAULT_AVATAR_PATH;
                 break;
             case 2:// 公告图片
                 defPath = Constants.DEFAULT_NOTI_PATH;

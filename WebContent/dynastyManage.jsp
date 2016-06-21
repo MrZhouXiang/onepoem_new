@@ -110,7 +110,8 @@
 		var sideUrl; //侧面
 		currentPageVar = pageIndex;
 		currentLoc = 1;
-		$.ajax({
+		$
+				.ajax({
 					url : "webctrl/getPoemList/" + currentPageVar,
 					data : {
 						currentPage : currentPageVar,
@@ -138,13 +139,20 @@
 														+ data.result[i].author_name
 														+ "</td>"
 														+ "<td>"
-														+ data.result[i].content.substr(0, 10)
+														+ data.result[i].content
+																.substr(0, 10)
 														+ "..."
 														+ "</td>"
 														+ "<td>"
 														+ "<a href='"+urlPath+data.result[i].url+"' target='_blank'><img width='150' height='150' src='"
 															+urlPath+data.result[i].url+"' align='middle''></a>"
-														+ "</td>" + "<td>" + "<a href='#' onclick=\"memberDetail_Click('" + data.result[i].id + "','" + data.result[i].author_id + "')\">详情</a>"
+														+ "</td>"
+														+ "<td>"
+														+ "<a href='#' onclick=\"memberDetail_Click('"
+														+ data.result[i].id
+														+ "','"
+														+ data.result[i].author_id
+														+ "')\">详情</a>"
 														+ "</td>" + "</tr>");
 							}
 							//显示分布按钮							

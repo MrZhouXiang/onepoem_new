@@ -1,11 +1,11 @@
-<!-- 新增诗人 -->
+<!-- 用户详情 -->
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>添加诗人</title>
+<title>用户详情</title>
 <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="">
@@ -91,17 +91,17 @@
 		
 		//获取详情
 		$.ajax({
-			url : "webctrl/getAuthor",
+			url : "webctrl/getUser",
 			dataType : "json",
 			type : "post",
 			data:{
 				id : idVar,
 	        },
 			success : function(data) {
-				$("#title").val(data.name);
-				$("#content").val(data.introduce);
-				$("#style").val(data.style);
-				var path = "../../res/assets/img/author/"+data.url;
+				$("#name").val(data.pen_name);
+				$("#email").val(data.email);
+				$("#money").val(data.money);
+				var path = "../../res/assets/img/avatar/"+data.url;
 	            $("#front_files").find("img").attr("src",path).show();
 	            $("#front_files").find("a").attr("href",path).show();
 	            $("#front_files").find("i").hide();
@@ -109,29 +109,6 @@
 			}
 		});
 		
-		
-		$.ajax({
-			url : "webctrl/getDynastyList",
-			dataType : "json",
-			type : "post",
-			data:{
-				id : 1,
-				size : 10,
-	        },
-			success : function(data) {
-				$("#made_type").empty();
-					for (var i = 0; i < data.length; i++) {
-						gradeArray[i] = data[i].id;
-						var selected= "";
-						if(data[i].id==dynasty_id){
-							selected= "selected";
-						}
-						$("#made_type").append(
-								"<option "+selected+" value='"+data[i].id+"'>"
-										+ data[i].name + "</option>");
-										}
-			}
-		});
 	}
 	
 	//注册函数
@@ -152,22 +129,22 @@
 	 */
 	function addModel(){
 			$("#save").on("click",function(){
-				var title = $("#title").val();
-				var content = $("#content").val();
-				var style = $("#style").val();
-				if(title === ""){
+				var name = $("#name").val();
+				var email = $("#email").val();
+				var money = $("#money").val();
+				if(name === ""){
 	        		layer.msg("请输入诗人姓名",2,{type : 1,shade : false});
-	        		$("#title").focus();
+	        		$("#name").focus();
 	        		return false;
 	        	}
-				if(style === ""){
+				if(money === ""){
 	        		layer.msg("请输入字号",2,{type : 1,shade : false});
-	        		$("#style").focus();
+	        		$("#money").focus();
 	        		return false;
 				}
-	        	if(content === ""){
+	        	if(email === ""){
 	        		layer.msg("请输入简介",2,{type : 1,shade : false});
-	        		$("#content").focus();
+	        		$("#email").focus();
 	        		return false;
 	        	}
 	        	if($("#front_fileName").val() === ""){
@@ -178,15 +155,13 @@
 	        	
 				var photoNameStr = $("#front_fileName").val();
 	            $.ajax({
-	                url:"webctrl/updateAuthor",
+	                url:"webctrl/updateUser",
 	                type:"POST",
 	                dataType:"json",
 	                data:{
-	                	dynasty_id : $("#made_type").find("option:selected").val(),
-	                	dynasty : $("#made_type").find("option:selected").text(),
-	                	name : title,
-	                	style : style,
-	                	introduce : content,
+	                	pen_name : name,
+	                	email : email,
+	                	money : money,
 	                	url : photoNameStr,
 	                	id : idVar
 	                },
@@ -291,7 +266,7 @@
 				<jsp:include page="/left.jsp"></jsp:include>
 			</div>
 			<div class="span10">
-				<h2>添加诗人</h2>
+				<h2>用户详情</h2>
 				<div class="well">
 					<div id="myTabContent" class="tab-content">
 						<div class="row-fluid">
@@ -300,29 +275,23 @@
 									<div class="span4">
 										<form class="form-horizontal" id="adsForm">
 											<div class="form-group">
-												<label class="col-sm-2 control-label" for="made_type">朝代</label>
+												<label class="col-sm-2 control-label" for="name">姓名</label>
 												<div class="col-sm-10">
-													<select id="made_type"></select><span class="help-block"></span>
+													<input type="text" class="form-control" id="name"
+														name="name"> <span class="help-block"></span>
 												</div>
 											</div>
 											<div class="form-group">
-												<label class="col-sm-2 control-label" for="title">姓名</label>
+												<label class="col-sm-2 control-label" for="money">墨汁余额</label>
 												<div class="col-sm-10">
-													<input type="text" class="form-control" id="title"
-														name="title"> <span class="help-block"></span>
-												</div>
-											</div>
-											<div class="form-group">
-												<label class="col-sm-2 control-label" for="">字号</label>
-												<div class="col-sm-10">
-													<input type="text" class="form-control" id="style" name="">
+													<input type="text" class="form-control" id="money" name="money">
 													<span class="help-block"></span>
 												</div>
 											</div>
 											<div class="form-group">
-												<label class="col-sm-2 control-label" for="content">简介</label>
+												<label class="col-sm-2 control-label" for="email">邮箱</label>
 												<div class="col-sm-10">
-													<textarea class="form-control" id="content" name="content"
+													<textarea class="form-control" id="email" name="email"
 														rows="3"></textarea>
 													<span class="help-block"></span>
 												</div>
@@ -334,7 +303,7 @@
 														type="button">
 														<i class="glyphicon glyphicon-upload"></i> <span>选择图片</span>
 														<input id="front_fileupload" type="file" name="files[]"
-															data-url="controller/upload/9" accept=".jpg,.png,.gif">
+															data-url="controller/upload/1" accept=".jpg,.png,.gif">
 														<input type="hidden" id="front_fileName" /> <input
 															type="hidden" id="front_type" value="zhengmian" />
 													</button>

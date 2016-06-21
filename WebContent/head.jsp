@@ -15,7 +15,7 @@
 						<li><a tabindex="-1" href="/logout">退出</a></li>
 					</ul></li>
 			</ul>
-			<a class="brand" href="index.jsp"><span class="first"></span>
+			<a class="brand" href="poemManage.jsp"><span class="first"></span>
 				<span class="second">一首小诗</span></a>
 		</div>
 	</div>

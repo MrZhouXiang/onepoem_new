@@ -95,7 +95,7 @@ public class PoemDaoImpl extends BaseDaoImpl implements PoemDao
     @Override
     public boolean updateModel(PoemMod model)
     {
-        String sql = "update poem_t set author_name=:author_name,title=:title,content=:content,url=:url "
+        String sql = "update poem_t set author_name=:author_name,author_id=:author_id,title=:title,content=:content,url=:url "
                 + "where id=:id";
         GeneratedKeyHolder generatedKeyHolder = new GeneratedKeyHolder();
         int num = this.namedJdbcTemplate.update(sql,

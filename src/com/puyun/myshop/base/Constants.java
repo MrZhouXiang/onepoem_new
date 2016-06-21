@@ -43,7 +43,7 @@ public class Constants
      * 头像图片路径
      */
     public static final String DEFAULT_AVATAR_PATH = RES_PATH
-            + "/assets/avatar/";
+            + "/assets/img/avatar/";
 
     /**
      * 资讯图片路径

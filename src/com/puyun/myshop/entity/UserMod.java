@@ -14,8 +14,19 @@ public class UserMod
     private String tel;// 手机号
     private String email;// 邮箱
     private String url;// 头像
+    private int money;// 墨汁【充值】
+    
+    
 
-    public String getUrl()
+    public int getMoney() {
+		return money;
+	}
+
+	public void setMoney(int money) {
+		this.money = money;
+	}
+
+	public String getUrl()
     {
         return url;
     }

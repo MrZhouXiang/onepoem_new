@@ -88,4 +88,10 @@ public class AuthorDaoImpl extends BaseDaoImpl implements AuthorDao
 //        return false;
 	}
 
+	@Override
+	public boolean deleteModel(int id) {
+		String sql = "delete from author_t where id = "+id;
+        int i = jdbcTemplate.update(sql);
+        return i > 0 ? true : false;
+	}
 }

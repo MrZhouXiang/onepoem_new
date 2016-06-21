@@ -11,6 +11,8 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import com.puyun.myshop.base.util.ListUtils;
 import com.puyun.myshop.base.util.Utils;
 import com.puyun.myshop.dao.UserDao;
+import com.puyun.myshop.entity.AuthorMod;
+import com.puyun.myshop.entity.PoemMod;
 import com.puyun.myshop.entity.UserMod;
 
 /**
@@ -107,5 +109,35 @@ public class UserDaoImpl implements UserDao {
 				Utils.md5Encode(pwd) }, new BeanPropertyRowMapper<UserMod>(
 				UserMod.class));
 		return ListUtils.isNotEmpty(list) ? list.get(0) : null;
+	}
+
+	@Override
+	public List<UserMod> getUserList(String keyword, int start, int num) {
+		// TODO Auto-generated method stub
+		String key = "%" + keyword + "%";
+        String sql = "select * from user_t where pen_name like ? order by id desc"
+                + " limit " + start + "," + num;
+        List<UserMod> list = jdbcTemplate.query(sql, new Object[]
+        { key }, new BeanPropertyRowMapper<UserMod>(UserMod.class));
+        return list;
+	}
+
+	
+	@Override
+	public UserMod getUser(int id) {
+		String sql = "select * from user_t where id = ?";
+        List<UserMod> list = jdbcTemplate.query(sql, new Object[]
+        { id }, new BeanPropertyRowMapper<UserMod>(UserMod.class));
+        return list.get(0);
+	}
+
+	@Override
+	public boolean updateUser(UserMod model) {
+		String sql = "update user_t set pen_name=:pen_name,tel=:tel,email=:email,url=:url,money=:money "
+                + "where id=:id";
+        GeneratedKeyHolder generatedKeyHolder = new GeneratedKeyHolder();
+        int num = this.namedJdbcTemplate.update(sql,
+                new BeanPropertySqlParameterSource(model), generatedKeyHolder);
+        return num > 0 ? true : false;
 	}
 }

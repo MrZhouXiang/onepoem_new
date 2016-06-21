@@ -20,10 +20,12 @@ import com.puyun.myshop.base.Constants;
 import com.puyun.myshop.dao.AuthorDao;
 import com.puyun.myshop.dao.DynastyDao;
 import com.puyun.myshop.dao.PoemDao;
+import com.puyun.myshop.dao.UserDao;
 import com.puyun.myshop.entity.AuthorMod;
 import com.puyun.myshop.entity.DynastyMod;
 import com.puyun.myshop.entity.PageBean;
 import com.puyun.myshop.entity.PoemMod;
+import com.puyun.myshop.entity.UserMod;
 
 /**
  * 处理来自web端的请求
@@ -43,10 +45,94 @@ public class WebCtrl {
 	private PoemDao poemDao;
 	@Autowired
 	private DynastyDao dynastyDao;
+	@Autowired
+	private UserDao userDao;
 
 	public WebCtrl() {
 		super();
 		logger.debug("创建对象AppCtrl");
+	}
+
+	/**
+	 * 获取用户列表
+	 * 
+	 * @param id
+	 * @param size
+	 * @return
+	 */
+	@RequestMapping(value = "/getUserList/{p}")
+	@ResponseBody
+	public Map<String, Object> getUserList(HttpServletRequest req,
+			PageBean page, String keyword, @PathVariable int p,
+			@RequestParam(defaultValue = "10") int num) {
+		// List<AuthorMod> list = authorDao.getAuthorList(id, size, -1);
+		// return list;
+		Map<String, Object> map = new HashMap<String, Object>();
+		String urlPath = req.getScheme() + "://" + req.getServerName() + ":"
+				+ req.getServerPort(); // url路径
+		urlPath = Constants.DEFAULT_AVATAR_PATH;
+		logger.debug("urlPath-->" + urlPath);
+		try {
+			// http://127.0.0.1:8080
+			int start = (p - 1) * num;
+			int count = 100;
+			List<UserMod> list = userDao.getUserList(keyword, start, num);
+			// return list;
+			if (list == null) {
+				map.put("success", false);
+			} else {
+				map.put("success", true);
+				map.put("url", urlPath);
+				map.put("result", list);
+
+				map.put("totalPage", ((count - 1) / num) + 1);
+				map.put("total", count);
+				map.put("curPage", p);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return map;
+	}
+
+	/**
+	 * 
+	 * 修改用户
+	 * 
+	 * @param req
+	 * @param model
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/updateUser")
+	public Map<String, Object> updateUser(HttpServletRequest req, UserMod model) {
+
+		Map<String, Object> map = new HashMap<String, Object>();
+		boolean flag = userDao.updateUser(model);
+		if (flag) {
+			map.put("success", true);
+			logger.debug("操作成功");
+		} else {
+			map.put("success", false);
+			logger.debug("操作失败");
+		}
+		return map;
+	}
+
+	/**
+	 * 
+	 * 获取一用户
+	 * 
+	 * @param req
+	 * @param model
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getUser")
+	public UserMod getUser(HttpServletRequest req, int id) {
+
+		UserMod mod = userDao.getUser(id);
+		return mod;
 	}
 
 	/**
@@ -89,8 +175,8 @@ public class WebCtrl {
 	public Map<String, Object> getAuthorList(HttpServletRequest req,
 			PageBean page, String keyword, @PathVariable int p,
 			@RequestParam(defaultValue = "10") int num) {
-//		List<AuthorMod> list = authorDao.getAuthorList(id, size, -1);
-//		return list;
+		// List<AuthorMod> list = authorDao.getAuthorList(id, size, -1);
+		// return list;
 		Map<String, Object> map = new HashMap<String, Object>();
 		String urlPath = req.getScheme() + "://" + req.getServerName() + ":"
 				+ req.getServerPort(); // url路径
@@ -119,10 +205,10 @@ public class WebCtrl {
 		}
 		return map;
 	}
-	
+
 	/**
 	 * 
-	 * 获取一位作者
+	 * 获取一位诗人
 	 * 
 	 * @param req
 	 * @param model
@@ -135,6 +221,31 @@ public class WebCtrl {
 		AuthorMod mod = authorDao.getAuthor(id);
 		return mod;
 	}
+
+	/**
+	 * 
+	 * 修改一首诗
+	 * 
+	 * @param req
+	 * @param model
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/deleteOneAuthor")
+	public Map<String, Object> deleteOneAuthor(HttpServletRequest req, int id) {
+
+		Map<String, Object> map = new HashMap<String, Object>();
+		boolean flag = authorDao.deleteModel(id);
+		if (flag) {
+			map.put("success", true);
+			logger.debug("操作成功");
+		} else {
+			map.put("success", false);
+			logger.debug("操作失败");
+		}
+		return map;
+	}
+
 	/**
 	 * 
 	 * 增加一首诗
@@ -182,9 +293,10 @@ public class WebCtrl {
 		}
 		return map;
 	}
-	
+
 	/**
 	 * 删除一首小诗
+	 * 
 	 * @param req
 	 * @param model
 	 * @return
@@ -204,6 +316,7 @@ public class WebCtrl {
 		}
 		return map;
 	}
+
 	/**
 	 * 
 	 * 获取一首诗
@@ -243,6 +356,7 @@ public class WebCtrl {
 		}
 		return map;
 	}
+
 	/**
 	 * 
 	 * 修改一位诗人
@@ -253,7 +367,8 @@ public class WebCtrl {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/updateAuthor")
-	public Map<String, Object> updateAuthor(HttpServletRequest req, AuthorMod model) {
+	public Map<String, Object> updateAuthor(HttpServletRequest req,
+			AuthorMod model) {
 
 		Map<String, Object> map = new HashMap<String, Object>();
 		boolean flag = authorDao.updateAuthor(model);
@@ -266,6 +381,7 @@ public class WebCtrl {
 		}
 		return map;
 	}
+
 	@RequestMapping(value = "/getPoemList/{p}")
 	@ResponseBody
 	public Map<String, Object> getPoemList(HttpServletRequest req,

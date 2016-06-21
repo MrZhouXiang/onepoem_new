@@ -177,7 +177,7 @@
 	                	author_name : $("#made_type").find("option:selected").text(),
 	                	title : title,
 	                	content : content,
-	                	url : photoNameStr,
+	                	url : photoNameStr
 	                },
 	                success:function(data){
 	                    if (data.success) {
@@ -190,7 +190,7 @@
         
 	}
 	/**
-	 * 新增模板
+	 * 
 	 */
 	function delModel(){
 			$("#delete").on("click",function(){
@@ -282,7 +282,7 @@
 				<jsp:include page="/left.jsp"></jsp:include>
 			</div>
 			<div class="span10">
-				<h2>添加诗文</h2>
+				<h2>编辑诗文</h2>
 				<div class="well">
 					<div id="myTabContent" class="tab-content">
 						<div class="row-fluid">

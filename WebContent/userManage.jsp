@@ -1,4 +1,4 @@
-<!--模板管理界面-->
+<!--用户管理界面-->
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -111,7 +111,7 @@
 		currentPageVar = pageIndex;
 		currentLoc = 1;
 		$.ajax({
-					url : "webctrl/getPoemList/" + currentPageVar,
+					url : "webctrl/getUserList/" + currentPageVar,
 					data : {
 						currentPage : currentPageVar,
 						pageSize : pageSizeVar,
@@ -132,14 +132,13 @@
 										.append(
 												"<tr>"
 														+ "<td>"
-														+ data.result[i].title
+														+ data.result[i].pen_name
 														+ "</td>"
 														+ "<td>"
-														+ data.result[i].author_name
+														+ data.result[i].email
 														+ "</td>"
 														+ "<td>"
-														+ data.result[i].content.substr(0, 10)
-														+ "..."
+														+ data.result[i].money
 														+ "</td>"
 														+ "<td>"
 														+ "<a href='"+urlPath+data.result[i].url+"' target='_blank'><img width='150' height='150' src='"
@@ -179,7 +178,7 @@
 
 	});
 	function memberDetail_Click(id, author_id) {
-		location.href = "poemDetail.jsp?id=" + id + "&author_id=" + author_id;
+		location.href = "userDetail.jsp?id=" + id;
 	}
 	function pageCallback_lock(index, jq) {
 
@@ -241,9 +240,9 @@
 									<table class="table table-hover">
 										<thead>
 											<tr>
-												<th>标题</th>
-												<th>作者</th>
-												<th>内容</th>
+												<th>姓名</th>
+												<th>邮箱</th>
+												<th>墨汁</th>
 												<th>图片</th>
 												<th>操作</th>
 											</tr>
