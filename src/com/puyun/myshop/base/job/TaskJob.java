@@ -2,9 +2,6 @@ package com.puyun.myshop.base.job;
 
 
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.puyun.myshop.dao.AppDao;
 /**
  * 
  *  每30秒更新一下订单状态
@@ -15,8 +12,8 @@ import com.puyun.myshop.dao.AppDao;
  */
 public class TaskJob
 {
-    @Autowired
-    private AppDao appDao;
+//    @Autowired
+//    private AppDao appDao;
     
     public static Logger log = Logger.getLogger(TaskJob.class);
     

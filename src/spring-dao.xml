@@ -22,8 +22,8 @@
 	<bean id="userDao" class="com.puyun.myshop.daoImpl.UserDaoImpl">
 		<property name="jdbcTemplate" ref="jdbcTemplate" />
 	</bean>
-	<!-- APP接口 -->
-	<bean id="appDao" class="com.puyun.myshop.daoImpl.AppDaoImpl">
+	<!-- diy诗文管理 -->
+	<bean id="diyPoemDao" class="com.puyun.myshop.daoImpl.DiyPoemDaoImpl">
 		<property name="daoSupport" ref="daoSupport" />
 		<property name="jdbcTemplate" ref="jdbcTemplate" />
 	</bean>

@@ -2,10 +2,8 @@ package com.puyun.myshop.base.job;
 
 
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.puyun.myshop.base.Constants;
-import com.puyun.myshop.dao.AppDao;
 
 /**
  * 
@@ -15,8 +13,8 @@ import com.puyun.myshop.dao.AppDao;
  */
 public class ClearWorkQueueTask
 {
-    @Autowired
-    private AppDao appDao;
+//    @Autowired
+//    private AppDao appDao;
     
     public static Logger log = Logger.getLogger(ClearWorkQueueTask.class);
     
