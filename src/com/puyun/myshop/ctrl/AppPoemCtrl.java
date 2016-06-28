@@ -1,8 +1,14 @@
 package com.puyun.myshop.ctrl;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -12,8 +18,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import com.puyun.myshop.base.Constants;
+import com.puyun.myshop.base.MD5;
 import com.puyun.myshop.base.util.Utils;
 import com.puyun.myshop.dao.DiyPoemDao;
 import com.puyun.myshop.dao.DynastyDao;
@@ -239,5 +247,103 @@ public class AppPoemCtrl {
 		}
 
 		return new Result(code, result);
+	}
+	
+	
+	@ResponseBody
+	@RequestMapping("/upload")
+	public Map<String, Object> authorizeOld(
+			@RequestParam(value = "photo_list", required = true) CommonsMultipartFile[] photo_list,
+			HttpServletRequest request) {
+		String folderName = "/../upevidences";
+		Map<String, Object> map = new HashMap<String, Object>();
+//		ArrayList<Info_extra_user> evidences = new ArrayList<Info_extra_user>();
+		String errorMsg = "EVIDENCE_UPLOAD_FAILED";
+		// 系统路径分隔符
+		// String fengefu=new
+		// Properties(System.getProperties()).getProperty("file.separator");
+		String fengefu = "/";
+		// 首先检查是否有存放照片的文件夹upevidences,如果没有系统创建
+		String appPath = request.getRealPath("/");
+		String folderPath = appPath + folderName;
+		File file = new File(folderPath);
+		if (!file.exists()) {
+			file.mkdir();
+		}
+		for (int i = 0; i < photo_list.length; i++) {
+			String originalFilename = photo_list[i].getOriginalFilename();
+			String subfix = originalFilename.substring(originalFilename
+					.lastIndexOf(".")); // 获取图片后缀
+			String sysFileName = MD5.md5Encode(UUID.randomUUID().toString())
+					+ subfix;// 系统生成的文件名
+			String realFilePath = folderPath + fengefu + sysFileName;
+			// MQL TODO
+			String remotePath = request.getScheme() + "://"
+					+ request.getServerName() + ":" + request.getServerPort()
+					+ request.getContextPath() + fengefu + folderName + fengefu
+					+ sysFileName;// 访问图片的地址
+			InputStream in = null;
+			OutputStream out = null;
+//			Info_extra_user o = new Info_extra_user();
+			try {
+				// 拿到上传文件的输入流
+				in = (InputStream) photo_list[i].getInputStream();
+				// 文件输出流
+				out = new FileOutputStream(realFilePath);
+				int length = 0;
+				byte[] b = new byte[1024];
+				while ((length = in.read(b)) > 0) {
+					out.write(b, 0, length);
+				}
+				out.flush();
+//				o.setDate_record(HttpTime.syncCurrentTime());
+//				o.setDescription(remotePath);
+//				o.setId_user(user_id);
+//				o.setName(originalFilename);
+//				o.setType(Integer.parseInt(readProperties
+//						.getInfoFromProperties("EVIDENCE")));
+//				evidences.add(o);
+			} catch (Exception e) {
+				System.out.println("上传出现问题");
+//				evidences.remove(o);// 从列表中删除上传失败的类
+				errorMsg += (originalFilename + " ");
+			} finally {
+				try {
+					out.close();
+					in.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+
+			}
+
+		}
+		int code = 2000;
+		// 上传失败的证据集合
+//		ArrayList<Info_extra_user> failedList = userService
+//				.uploadEvidences(evidences);
+//		// 只要不是全部上传失败，就将用户状态改为认证中
+//		if (evidences.size() > failedList.size()) {
+//			// 修改用户状态
+//			userService.changeUserStatus(user_id);
+//		}
+//		if (errorMsg.equals(readProperties
+//				.getInfoFromProperties("EVIDENCE_UPLOAD_FAILED"))) {// 全部上传成功
+//			map.put("successMsg", readProperties
+//					.getInfoFromProperties("EVIDENCE_UPLOAD_SUCCESS"));
+//			// 将上传信息保存至数据库
+//			for (Info_extra_user p : failedList) {
+//				errorMsg += p.getDescription() + " ";
+//				map.remove("successMsg");
+//			}
+//
+//		} else {// 有上传失败的
+//			code = 4016;// 操作失败
+//			map.put("errorMsg", errorMsg);
+//		}
+		map.put("code", code);
+		return map;
 	}
 }
