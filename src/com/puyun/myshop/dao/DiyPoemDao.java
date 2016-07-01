@@ -18,7 +18,7 @@ public interface DiyPoemDao {
 	 * @param dynasty_id
 	 * @return
 	 */
-	List<DiyPoemMod> getDiyPoemList(int id, int size, int page, int dynasty_id);
+	List<DiyPoemMod> getDiyPoemList(int id, int size, int page, String tag);
 
 	DiyPoemMod getDiyPoem(int id);
 

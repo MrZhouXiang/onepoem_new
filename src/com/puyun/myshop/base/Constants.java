@@ -117,9 +117,9 @@ public class Constants
     public static final String DOWNLOAD_LINK_PATH = "/downloadApp";
 
     /**
-     * 广告位图片路径
+     * 客户发布图片路径
      */
-    public static final String DEFAULT_AD_PATH = RES_PATH + "/assets/img/ad/";
+    public static final String DEFAULT_DIY_PATH = RES_PATH + "/assets/img/diypoem/";
 
     /**
      * 诗图片路径

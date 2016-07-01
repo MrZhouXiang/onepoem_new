@@ -94,7 +94,7 @@ public class FileCtrl
                 height = 200;
                 break;
             case 7:// 广告位图片
-                defPath = Constants.DEFAULT_AD_PATH;
+                defPath = Constants.DEFAULT_DIY_PATH;
                 width = 800;
                 height = 800;
                 break;

@@ -27,6 +27,10 @@
 		<property name="daoSupport" ref="daoSupport" />
 		<property name="jdbcTemplate" ref="jdbcTemplate" />
 	</bean>
-	
+	<!-- tag -->
+	<bean id="tagDao" class="com.puyun.myshop.daoImpl.TagDaoImpl">
+		<property name="daoSupport" ref="daoSupport" />
+		<property name="jdbcTemplate" ref="jdbcTemplate" />
+	</bean>
 	
 </beans>

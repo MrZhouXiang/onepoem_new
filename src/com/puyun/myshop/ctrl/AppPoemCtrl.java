@@ -2,10 +2,9 @@ package com.puyun.myshop.ctrl;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -15,22 +14,25 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.puyun.myshop.base.Constants;
-import com.puyun.myshop.base.MD5;
 import com.puyun.myshop.base.util.Utils;
 import com.puyun.myshop.dao.DiyPoemDao;
 import com.puyun.myshop.dao.DynastyDao;
 import com.puyun.myshop.dao.PoemDao;
+import com.puyun.myshop.dao.TagDao;
 import com.puyun.myshop.dao.UserDao;
 import com.puyun.myshop.entity.DiyPoemMod;
 import com.puyun.myshop.entity.DynastyMod;
 import com.puyun.myshop.entity.PoemMod;
 import com.puyun.myshop.entity.Result;
+import com.puyun.myshop.entity.TagMod;
 import com.puyun.myshop.entity.UserMod;
 
 /**
@@ -55,10 +57,52 @@ public class AppPoemCtrl {
 	private DynastyDao dynastyDao;
 	@Autowired
 	private DiyPoemDao diyPoemDao;
-
+	@Autowired
+	private TagDao tagDao;
+	
 	public AppPoemCtrl() {
 		super();
 		logger.debug("创建对象AppCtrl");
+	}
+
+	/**
+	 * 获取作品列表
+	 * 
+	 * @param req
+	 * @param id
+	 *            第一条id
+	 * @param size
+	 *            大小
+	 * @param page
+	 *            刷新加载更多控制 -1 0 1
+	 * 
+	 * @param dynasty_id
+	 *            作者朝代id【默认为0表示全部,-1:精选】
+	 * @return
+	 */
+	@RequestMapping(value = "/getDiyPoemList")
+	@ResponseBody
+	public Result getDiyPoemList(HttpServletRequest req,
+			@RequestParam(required = false, defaultValue = "-1") int id,
+			@RequestParam(required = false, defaultValue = "10") int size,
+			@RequestParam(required = false, defaultValue = "0") int page,
+			@RequestParam(required = false, defaultValue = "") String tag) {
+		// List<PoemMod> list = poemDao.getPoemList(id, size, page);
+		// return list;
+
+		Map<String, Object> result = new HashMap<String, Object>();
+		String code = "";
+		try {
+			List<DiyPoemMod> list = diyPoemDao.getDiyPoemList(id, size, page,
+					tag);
+			result.put("list", list);
+			code = "2000";
+		} catch (Exception e) {
+			code = "5000";
+			result.put("reason", "服务器异常");
+		}
+
+		return new Result(code, result);
 	}
 
 	/**
@@ -74,6 +118,8 @@ public class AppPoemCtrl {
 		Map<String, Object> result = new HashMap<String, Object>();
 		String code = "";
 		try {
+
+			// 插入model
 			if (diyPoemDao.addModel(mod)) {
 				result.put("id", "");
 			}
@@ -85,7 +131,33 @@ public class AppPoemCtrl {
 		}
 		return new Result(code, result);
 	}
+	/**
+	 * 获取tag列表
+	 * 
+	 * @param req
+	 * @param id
+	 * @param size
+	 * @return
+	 */
+	@RequestMapping(value = "/getTagList")
+	@ResponseBody
+	public Result getTagList(HttpServletRequest req) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		String code = "";
+		try {
+			List<TagMod> list = tagDao.getTagList();
+			// 增加全部类型
+			list.add(0, new TagMod("0", "全部"));
+			list.add(1, new TagMod("-1", "精选"));
+			result.put("list", list);
+			code = "2000";
+		} catch (Exception e) {
+			code = "5000";
+			result.put("reason", "服务器异常");
+		}
 
+		return new Result(code, result);
+	}
 	/**
 	 * 获取朝代列表
 	 * 
@@ -248,102 +320,127 @@ public class AppPoemCtrl {
 
 		return new Result(code, result);
 	}
-	
-	
+
+	/**
+	 * 上传照片
+	 * 
+	 * @param req
+	 * @param orderCode
+	 *            订单ID
+	 * @param goodsId
+	 *            商品ID
+	 * @return author: ldz
+	 * @see [类、类#方法、类#成员]
+	 */
+	/**
+	 * @param req
+	 * @param orderCode
+	 * @param goodsId
+	 * @param type
+	 * @param filePath
+	 * @param count
+	 * @return
+	 */
+	/**
+	 * @param req
+	 * @param orderCode
+	 * @param goodsId
+	 * @param type
+	 * @param filePath
+	 * @param count
+	 * @return
+	 */
+	@RequestMapping(value = "/upload")
 	@ResponseBody
-	@RequestMapping("/upload")
-	public Map<String, Object> authorizeOld(
-			@RequestParam(value = "photo_list", required = true) CommonsMultipartFile[] photo_list,
-			HttpServletRequest request) {
-		String folderName = "/../upevidences";
+	public Result uploadPhoto(HttpServletRequest req, String orderCode,
+			String goodsId, @RequestParam(defaultValue = "1") int type,
+			String filePath, @RequestParam(defaultValue = "1") String count) {
+		logger.debug("uploadPhoto ");
+		System.out.println(filePath);
 		Map<String, Object> map = new HashMap<String, Object>();
-//		ArrayList<Info_extra_user> evidences = new ArrayList<Info_extra_user>();
-		String errorMsg = "EVIDENCE_UPLOAD_FAILED";
-		// 系统路径分隔符
-		// String fengefu=new
-		// Properties(System.getProperties()).getProperty("file.separator");
-		String fengefu = "/";
-		// 首先检查是否有存放照片的文件夹upevidences,如果没有系统创建
-		String appPath = request.getRealPath("/");
-		String folderPath = appPath + folderName;
-		File file = new File(folderPath);
-		if (!file.exists()) {
-			file.mkdir();
-		}
-		for (int i = 0; i < photo_list.length; i++) {
-			String originalFilename = photo_list[i].getOriginalFilename();
-			String subfix = originalFilename.substring(originalFilename
-					.lastIndexOf(".")); // 获取图片后缀
-			String sysFileName = MD5.md5Encode(UUID.randomUUID().toString())
-					+ subfix;// 系统生成的文件名
-			String realFilePath = folderPath + fengefu + sysFileName;
-			// MQL TODO
-			String remotePath = request.getScheme() + "://"
-					+ request.getServerName() + ":" + request.getServerPort()
-					+ request.getContextPath() + fengefu + folderName + fengefu
-					+ sysFileName;// 访问图片的地址
-			InputStream in = null;
-			OutputStream out = null;
-//			Info_extra_user o = new Info_extra_user();
-			try {
-				// 拿到上传文件的输入流
-				in = (InputStream) photo_list[i].getInputStream();
-				// 文件输出流
-				out = new FileOutputStream(realFilePath);
-				int length = 0;
-				byte[] b = new byte[1024];
-				while ((length = in.read(b)) > 0) {
-					out.write(b, 0, length);
+		String code = "";
+		try {
+			String defPath = "";
+			switch (type) {
+			case 1:// 用户
+				defPath = Constants.DEFAULT_AVATAR_PATH;
+				break;
+			case 2:// 公告图片
+				defPath = Constants.DEFAULT_NOTI_PATH;
+				break;
+			case 3:// 活动图片
+				defPath = Constants.DEFAULT_PARTY_PATH;
+				break;
+			case 4:// 公司logo
+				defPath = Constants.DEFAULT_LOGO_PATH;
+				break;
+			case 5:// 产品图片
+				defPath = Constants.DEFAULT_PRODUCTION_PATH;
+				break;
+			case 6:// 机构logo
+				defPath = Constants.DEFAULT_ORGANIZATION_PATH;
+				break;
+			case 7:// diy图片
+				defPath = Constants.DEFAULT_DIY_PATH;
+				break;
+			case 8:// 诗图片
+				defPath = Constants.DEFAULT_MODEL_PATH;
+				break;
+			case 9:// 诗作者图片
+				defPath = Constants.DEFAULT_AUTHOR_PATH;
+				break;
+			default:
+			}
+			String path = req.getSession().getServletContext()
+					.getRealPath(defPath);
+			File dirFile = new File(path);
+			// 创建目录
+			if (!dirFile.exists()) {
+				dirFile.mkdirs();
+			}
+			if (req instanceof MultipartHttpServletRequest) {
+				MultipartHttpServletRequest request = (MultipartHttpServletRequest) req;
+				Iterator<String> itr = request.getFileNames();
+				List<String> fileNameList = new ArrayList();
+				while (itr.hasNext()) {// 循环保存文件
+					// String md5 = Utils
+					// .md5Encode(orderCode + goodsId + filePath);
+					String md5 = Utils.md5Encode(String.valueOf(UUID
+							.randomUUID()));
+					String tmpName = null;// 文件名
+					MultipartFile mpf = request.getFile(itr.next());
+					String subfix = "";// 后缀
+					if (mpf.getOriginalFilename().indexOf(".") != -1) {
+						subfix = mpf.getOriginalFilename().substring(
+								mpf.getOriginalFilename().lastIndexOf(".")); // 获取图片后缀
+					}
+					tmpName = md5 + subfix;
+					// 得到图片保存目录的真实路径
+					String realpath = request.getSession().getServletContext()
+							.getRealPath(defPath + tmpName);
+					FileOutputStream fps = new FileOutputStream(realpath);
+					FileCopyUtils.copy(mpf.getBytes(), fps);
+
+					// 文件名保存
+					fileNameList.add(tmpName);
 				}
-				out.flush();
-//				o.setDate_record(HttpTime.syncCurrentTime());
-//				o.setDescription(remotePath);
-//				o.setId_user(user_id);
-//				o.setName(originalFilename);
-//				o.setType(Integer.parseInt(readProperties
-//						.getInfoFromProperties("EVIDENCE")));
-//				evidences.add(o);
-			} catch (Exception e) {
-				System.out.println("上传出现问题");
-//				evidences.remove(o);// 从列表中删除上传失败的类
-				errorMsg += (originalFilename + " ");
-			} finally {
-				try {
-					out.close();
-					in.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				} catch (Exception e) {
-					e.printStackTrace();
+				if (fileNameList.size() > 0) {
+					code = "2000";
+					//
+					map.put("fileNameList", fileNameList);
 				}
 
+			} else {
+				code = "4001";
+				logger.debug("请求中没有照片");
 			}
 
+		} catch (Exception e) {
+			code = "5000";
+			logger.error(e.getMessage(), e);
 		}
-		int code = 2000;
-		// 上传失败的证据集合
-//		ArrayList<Info_extra_user> failedList = userService
-//				.uploadEvidences(evidences);
-//		// 只要不是全部上传失败，就将用户状态改为认证中
-//		if (evidences.size() > failedList.size()) {
-//			// 修改用户状态
-//			userService.changeUserStatus(user_id);
-//		}
-//		if (errorMsg.equals(readProperties
-//				.getInfoFromProperties("EVIDENCE_UPLOAD_FAILED"))) {// 全部上传成功
-//			map.put("successMsg", readProperties
-//					.getInfoFromProperties("EVIDENCE_UPLOAD_SUCCESS"));
-//			// 将上传信息保存至数据库
-//			for (Info_extra_user p : failedList) {
-//				errorMsg += p.getDescription() + " ";
-//				map.remove("successMsg");
-//			}
-//
-//		} else {// 有上传失败的
-//			code = 4016;// 操作失败
-//			map.put("errorMsg", errorMsg);
-//		}
-		map.put("code", code);
-		return map;
+		Result ret = new Result(code, map);
+		logger.debug("返回" + map.values());
+		return ret;
 	}
 }
